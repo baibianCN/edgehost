@@ -27,6 +27,24 @@ EdgeHost 把 PHP 引擎（Zend Engine）编译成 **WebAssembly**，运行在 Cl
 
 就这么简单。下面「手动部署」章节是给想用命令行的人准备的。
 
+### 📷 界面预览
+
+**首次进入面板 —— 网页直接设置密码，无需命令行：**
+
+![首次设置密码](docs/screenshots/01-setup.png)
+
+**文件管理 —— 在线编辑器 + 上传任意文件：**
+
+![文件管理](docs/screenshots/02-files.png)
+
+**设置页 —— 改密码 / 配 QQ 邮箱发信 / 域名说明，全图形化：**
+
+![设置页](docs/screenshots/03-settings.png)
+
+**访客看到的 PHP 网站：**
+
+![站点首页](docs/screenshots/04-site.png)
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │                  Cloudflare Edge                     │
