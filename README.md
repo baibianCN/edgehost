@@ -12,7 +12,11 @@ EdgeHost 把 PHP 引擎（Zend Engine）编译成 **WebAssembly**，运行在 Cl
 
 ## 🚀 一键部署（最简单的方式）
 
-**点下面的按钮就行 —— 不用 Fork、不用填用户名、不用填任何 URL。**
+> 📖 **新手请看图形化教程：[DEPLOY.md](DEPLOY.md) —— 全程点鼠标、不用敲任何命令**（注册账号 → Fork → 部署 → 设密码 → 绑域名，一步步截图级说明）。
+
+**点下面的按钮就行 —— 不用填用户名、不用填任何 URL。**
+
+> ⚠️ 若提示「无法获取存储库内容 / 无法查询到资源」：说明 Cloudflare 读不到本仓库，请先把项目 **Fork 到你自己的 GitHub 账号**，再从你自己仓库里的按钮部署。详见 [DEPLOY.md](DEPLOY.md)。
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/baibianCN/edgehost)
 
