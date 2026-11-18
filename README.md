@@ -10,19 +10,22 @@
 
 EdgeHost 把 PHP 引擎（Zend Engine）编译成 **WebAssembly**，运行在 Cloudflare Workers 的 V8 Isolate 里；站点文件存在 **Durable Objects** 中，通过网页控制台随时上传、编辑、运行。它长得像一台真正的虚拟主机：能跑 `.php`、能放 `.html`、能存图片/音频/视频，**PHP 还能直连外网 API、发邮件**，管理面板独立入口、密码保护。
 
-## 🚀 一键部署（最简单的方式）
+## 🚀 部署方式
 
-> 📖 **新手请看图形化教程：[DEPLOY.md](DEPLOY.md) —— 全程点鼠标、不用敲任何命令**（注册账号 → Fork → 部署 → 设密码 → 绑域名，一步步截图级说明）。
+**手动部署（把代码下载下来，自己一步步配）：👉 看 [DEPLOY.md](DEPLOY.md)**
 
-**点下面的按钮就行 —— 不用填用户名、不用填任何 URL。**
+需要你自己下载代码、装环境、登录 Cloudflare、敲命令部署。一套下来全手动，跟着教程一步步做即可。
 
-> ⚠️ 若提示「无法获取存储库内容 / 无法查询到资源」：说明 Cloudflare 读不到本仓库，请先把项目 **Fork 到你自己的 GitHub 账号**，再从你自己仓库里的按钮部署。详见 [DEPLOY.md](DEPLOY.md)。
+<details>
+<summary>🚀 也可以用一键按钮（自动部署，适合想省事的人）</summary>
+
+点下面的按钮，登录 Cloudflare，一路 Next 即可自动部署：
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/baibianCN/edgehost)
 
-> 点上面按钮 → 用你自己的 GitHub 账号登录 Cloudflare → 一路 Next。Cloudflare 会自动把仓库复制（Clone）到你自己的账号下，你啥都不用填。
+> 若提示「无法获取存储库内容」：先把项目 Fork 到你自己的 GitHub 账号，再从你自己仓库里的按钮部署。
 
-⚠️ **一定要从这个按钮进**，不要在 Cloudflare 控制台里手动选「从 Git 仓库导入」再粘 URL —— 手动粘容易出现「无法获取存储库内容」报错（详见文末故障排查）。
+</details>
 
 部署完成后：
 
