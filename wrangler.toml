@@ -1,0 +1,22 @@
+name = "edgehost"
+main = "worker/index.js"
+compatibility_date = "2025-05-05"
+compatibility_flags = ["enable_weak_ref"]
+
+# ============================================================
+# 零配置说明：
+# 本项目的文件存储、管理员密码、SMTP 设置全部存在 Durable Object 里，
+# 无需创建 KV、无需设置环境变量、无需填任何 id —— 点部署按钮即可用。
+# 首次打开管理面板时，在网页里设置管理员密码即可。
+# ============================================================
+
+[[durable_objects.bindings]]
+name = "FILE_STORE"
+class_name = "FileStore"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["FileStore"]
+
+[placement]
+mode = "smart"

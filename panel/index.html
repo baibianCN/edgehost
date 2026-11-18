@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EdgeHost 控制台</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<style>/*__CSS__*/</style>
+</head>
+<body>
+
+<!-- 登录页 / 首次设置密码 -->
+<div id="login-page" class="login-wrap hidden">
+  <div class="login-card">
+    <div class="logo">⚡ Edge<span>Host</span></div>
+    <p class="tagline">跑在全球边缘节点上的 PHP 虚拟主机</p>
+
+    <!-- 首次使用：设置管理员密码 -->
+    <form id="setup-form">
+      <div id="setup-badge" class="setup-badge">🎉 部署成功 · 首次使用请先设置管理员密码</div>
+      <label>设置管理员密码</label>
+      <input type="password" id="setup-password" placeholder="至少 6 位，例如 mysite2026" autocomplete="new-password" required minlength="6">
+      <label style="margin-top:12px">再输入一次</label>
+      <input type="password" id="setup-password2" placeholder="重复密码" autocomplete="new-password" required minlength="6">
+      <button type="submit" class="btn btn-primary btn-block">设置密码并进入控制台</button>
+    </form>
+
+    <!-- 已有密码：正常登录 -->
+    <form id="login-form" class="hidden">
+      <label>管理员密码</label>
+      <input type="password" id="login-password" placeholder="输入密码" autocomplete="current-password" required>
+      <button type="submit" class="btn btn-primary btn-block">登录控制台</button>
+    </form>
+    <p class="login-hint" id="login-hint"></p>
+    <p class="login-foot" id="login-foot">全部配置都在这个面板里完成，无需命令行</p>
+  </div>
+</div>
+
+<!-- 主界面 -->
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="logo small">⚡ Edge<span>Host</span></div>
+    <nav class="tabs">
+      <button class="tab active" data-view="files">文件管理</button>
+      <button class="tab" data-view="console">PHP 控制台</button>
+      <button class="tab" data-view="preview">网站预览</button>
+      <button class="tab" data-view="settings">⚙ 设置</button>
+      <button class="tab" data-view="about">关于</button>
+    </nav>
+    <div class="topbar-right">
+      <a class="btn btn-ghost" href="/" target="_blank" title="打开站点 ↗">访问网站</a>
+      <button class="btn btn-ghost" id="btn-logout">退出</button>
+    </div>
+  </header>
+
+  <!-- 文件管理视图 -->
+  <section id="view-files" class="view">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <button class="btn btn-primary btn-block" id="btn-new-file">＋ 新建文件</button>
+      </div>
+      <div class="toolbar">
+        <button class="tool" id="btn-upload" title="上传图片 / 音频 / 视频 / 任意文件">⤒ 上传文件</button>
+        <button class="tool" id="btn-new-folder" title="新建文件夹">▣ 新建文件夹</button>
+        <button class="tool" id="btn-init" title="一键生成演示站点">✨ 生成演示站</button>
+      </div>
+      <div id="file-tree" class="file-tree"></div>
+    </aside>
+
+    <main class="editor-pane">
+      <div class="editor-empty" id="editor-empty">
+        <div class="big-emoji">📂</div>
+        <p>从左侧选择文件，或新建 / 上传一个</p>
+      </div>
+      <div class="editor" id="editor">
+        <div class="editor-head">
+          <span class="file-path" id="current-path"></span>
+          <div class="editor-actions">
+            <button class="btn btn-ghost hidden" id="btn-view-media">预览</button>
+            <button class="btn btn-ghost hidden" id="btn-download">下载</button>
+            <button class="btn btn-danger hidden" id="btn-delete">删除</button>
+            <button class="btn btn-primary hidden" id="btn-save">保存</button>
+          </div>
+        </div>
+        <div class="editor-body">
+          <div class="line-nums" id="line-nums">1</div>
+          <textarea id="code" spellcheck="false" placeholder="选择或创建一个 PHP / HTML / CSS / JS 文件开始编辑…"></textarea>
+        </div>
+        <div class="editor-status" id="editor-status"></div>
+      </div>
+      <div class="media-viewer hidden" id="media-viewer">
+        <div class="media-head">
+          <span class="file-path" id="media-path"></span>
+          <button class="btn btn-ghost" id="btn-media-close">✕ 关闭</button>
+        </div>
+        <div class="media-body" id="media-body"></div>
+      </div>
+    </main>
+  </section>
+
+  <!-- PHP 控制台视图 -->
+  <section id="view-console" class="view hidden">
+    <div class="console-wrap">
+      <div class="console-head">
+        <span>实时执行 PHP 代码（可调用站点文件里的函数）</span>
+        <button class="btn btn-primary" id="btn-run">▶ 运行</button>
+      </div>
+      <textarea id="console-code" spellcheck="false">echo "PHP 版本: " . PHP_VERSION . "\n";
+echo "当前时间: " . date("Y-m-d H:i:s") . "\n";
+echo "GET 参数 demo: " . json_encode($_GET);</textarea>
+      <pre id="console-output" class="console-output">// 输出会显示在这里</pre>
+    </div>
+  </section>
+
+  <!-- 预览视图 -->
+  <section id="view-preview" class="view hidden">
+    <div class="preview-bar">
+      <input type="text" id="preview-url" placeholder="/" value="/">
+      <button class="btn btn-primary" id="btn-preview-go">刷新</button>
+      <a class="btn btn-ghost" id="preview-open" target="_blank">新窗口打开 ↗</a>
+    </div>
+    <iframe id="preview-frame" src="/"></iframe>
+  </section>
+
+  <!-- 设置视图 -->
+  <section id="view-settings" class="view hidden">
+    <div class="settings-wrap">
+      <div class="settings-card">
+        <div class="settings-head">
+          <span class="settings-ico">🔒</span>
+          <div><h2>修改管理员密码</h2><p>修改后其它已登录设备会自动退出</p></div>
+        </div>
+        <form id="password-form">
+          <label>当前密码</label>
+          <input type="password" id="pwd-current" autocomplete="current-password" required>
+          <label style="margin-top:14px">新密码（至少 6 位）</label>
+          <input type="password" id="pwd-next" autocomplete="new-password" required minlength="6">
+          <label style="margin-top:14px">确认新密码</label>
+          <input type="password" id="pwd-next2" autocomplete="new-password" required minlength="6">
+          <div class="settings-actions"><button type="submit" class="btn btn-primary">💾 保存新密码</button></div>
+        </form>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-head">
+          <span class="settings-ico">📧</span>
+          <div><h2>邮件发送设置（SMTP）</h2><p>配置后 PHP 里用 <code>cf_mail()</code> 发信，例如 QQ 邮箱</p></div>
+        </div>
+        <form id="smtp-form">
+          <div class="form-grid">
+            <div><label>SMTP 服务器</label><input id="smtp-host" placeholder="smtp.qq.com"></div>
+            <div><label>端口</label><input id="smtp-port" type="number" value="465" placeholder="465"></div>
+          </div>
+          <label style="margin-top:14px">邮箱账号</label>
+          <input id="smtp-user" placeholder="123456@qq.com" autocomplete="off">
+          <label style="margin-top:14px">密码 / 授权码</label>
+          <input id="smtp-pass" type="password" placeholder="QQ 邮箱填 SMTP 授权码（不是登录密码）" autocomplete="new-password">
+          <p class="field-hint" id="smtp-pass-hint" style="display:none">已保存密码，留空表示不修改</p>
+          <label style="margin-top:14px">发件人显示名（可选）</label>
+          <input id="smtp-from" placeholder="我的 EdgeHost 站点">
+          <div class="settings-actions">
+            <button type="submit" class="btn btn-primary">💾 保存设置</button>
+            <button type="button" class="btn btn-ghost" id="smtp-test">发送测试邮件</button>
+          </div>
+        </form>
+        <div class="smtp-help">
+          <b>QQ 邮箱获取授权码：</b>QQ 邮箱网页版 → 设置 → 账户 → POP3/IMAP/SMTP 服务 → 开启「IMAP/SMTP服务」→ 生成授权码，把它填到上方密码框。
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="settings-head">
+          <span class="settings-ico">🌐</span>
+          <div><h2>域名说明</h2><p>访客访问网站用主域名，管理面板在同一个域名的 <code>/__admin</code> 路径</p></div>
+        </div>
+        <div class="domain-box">
+          <div><span class="domain-label">你的网站</span><code id="domain-site">当前域名 /</code></div>
+          <div><span class="domain-label">管理面板</span><code id="domain-admin">当前域名 /__admin</code></div>
+          <p class="field-hint">想绑定自己的免费域名？看项目 README 的「免费域名一条龙」章节。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 关于视图 -->
+  <section id="view-about" class="view hidden">
+    <div class="about-card">
+      <h2>⚡ EdgeHost</h2>
+      <p>基于 Cloudflare Workers + php-wasm 的无服务器 PHP 虚拟主机。PHP 引擎编译为 WebAssembly 后运行在 Cloudflare 全球 300+ 边缘节点上，无需 VPS、无需容器、无需数据库。</p>
+      <table class="about-table">
+        <tr><td>PHP 版本</td><td><b>8.3</b></td></tr>
+        <tr><td>运行时</td><td>Cloudflare Workers (V8 Isolate + WebAssembly)</td></tr>
+        <tr><td>文件存储</td><td>Cloudflare Durable Objects（单实例强一致，零配置）</td></tr>
+        <tr><td>支持文件类型</td><td>.php / .html / .css / .js / .json / 图片 / 音频 / 视频 等</td></tr>
+        <tr><td>外网请求</td><td>支持！<code>http_get / http_post / http_json</code></td></tr>
+        <tr><td>发邮件</td><td>支持！<code>cf_mail()</code>（在设置页配置 SMTP）</td></tr>
+        <tr><td>管理面板</td><td>本界面（密码保护，<code>/__admin</code>）</td></tr>
+      </table>
+      <h3>支持的 PHP 特性</h3>
+      <ul>
+        <li>✅ 完整的 PHP 语法：函数、类、数组、字符串、日期、正则、JSON</li>
+        <li>✅ <code>include / require</code> 多文件站点</li>
+        <li>✅ <code>$_GET / $_POST / $_COOKIE / $_SERVER</code> 请求上下文</li>
+        <li>✅ 直连外网 API：<code>http_get('https://api.xxx.com')</code></li>
+        <li>✅ 发邮件：<code>cf_mail('to@x.com','标题','内容')</code></li>
+        <li>✅ 错误提示内联显示在页面中，方便调试</li>
+      </ul>
+      <p class="muted">本面板访问路径 <code>/__admin</code> · 网站根路径 <code>/</code></p>
+    </div>
+  </section>
+</div>
+
+<input type="file" id="upload-input" multiple hidden>
+<script>/*__JS__*/</script>
+</body>
+</html>

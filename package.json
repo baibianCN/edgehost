@@ -1,0 +1,18 @@
+{
+  "name": "edgehost",
+  "version": "1.0.0",
+  "description": "运行在 Cloudflare Workers 上的无服务器 PHP 虚拟主机（php-wasm + KV）",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build:panel": "node scripts/build-panel.mjs"
+  },
+  "dependencies": {
+    "php-cloud-wasm": "0.2.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.143.1"
+  }
+}
