@@ -1,147 +1,113 @@
-# 📦 手动部署教程（下载代码，自己一步步来）
+# 🌐 在 Cloudflare 网页界面手动部署（全程不用命令行）
 
-这个方案**不用一键按钮**。你需要把项目代码下载到自己电脑上，手动安装环境、登录、部署。每一步都要你自己敲命令、自己配置。
-
-> 部署完成后，网站文件、管理员密码、邮箱配置这些，都是在网页面板里图形化管理。但**项目本身**要你自己下载、自己部署。
+这个教程**不需要敲任何命令**。你先把代码下载到电脑上，然后全程在 **Cloudflare 网页界面**里点鼠标完成部署。每一步都要你自己手动操作。
 
 ---
 
-## 开始前准备（本机环境）
+## 开始前准备
 
-1. **一台电脑**（Windows / macOS / Linux 都行）
-2. 安装 **Node.js 18 或更高版本** —— 去 [nodejs.org](https://nodejs.org/) 下载安装包，一路下一步装好
-   - 装完打开终端（Windows 用 PowerShell，Mac 用终端），输入 `node -v`，能显示版本号就成功了
-3. 一个 **Cloudflare 账号** —— 去 [dash.cloudflare.com](https://dash.cloudflare.com/sign-up) 注册，选免费版
+1. 一个 **GitHub 账号** —— 没有就去 [github.com/signup](https://github.com/signup) 注册
+2. 一个 **Cloudflare 账号** —— 去 [dash.cloudflare.com](https://dash.cloudflare.com/sign-up) 注册，选免费版
 
 ---
 
-## 第 1 步：把代码下载下来
+## 第 1 步：把代码下载到电脑
 
-在你电脑上打开终端，找一个你想放项目的文件夹，然后执行：
-
-```bash
-git clone https://github.com/baibianCN/edgehost.git
-cd edgehost
-```
-
-> 如果你电脑上没装 git，也可以直接去 [https://github.com/baibianCN/edgehost](https://github.com/baibianCN/edgehost) 点绿色按钮 **Code → Download ZIP**，下载后解压，再进入解压出来的 `edgehost` 文件夹。
+1. 用浏览器打开项目地址：**https://github.com/baibianCN/edgehost**
+2. 点绿色的 **Code** 按钮 → 点 **Download ZIP**
+3. 下载完成后，把 ZIP 解压，得到一个 `edgehost` 文件夹，留着后面用
 
 ---
 
-## 第 2 步：安装项目依赖
+## 第 2 步：登录 Cloudflare
 
-在 `edgehost` 文件夹里，执行：
-
-```bash
-npm install
-```
-
-等它装完（可能需要一两分钟，看网速）。
+1. 浏览器打开 [dash.cloudflare.com](https://dash.cloudflare.com)
+2. 用你的账号登录
 
 ---
 
-## 第 3 步：登录 Cloudflare
+## 第 3 步：创建存储（在 Cloudflare 界面里）
 
-执行：
-
-```bash
-npx wrangler login
-```
-
-会自动打开浏览器，让你登录 Cloudflare 并点 **Allow（允许）** 授权。授权完成回到终端，显示登录成功就 OK 了。
+1. 左侧菜单点 **Workers & Pages**
+2. 找到 **KV**（或 **Durable Objects**）那一栏，点进去
+3. 点 **Create a namespace**（创建命名空间）
+4. 名字随便填一个，比如 `edgehost-store`，点 **Add** 创建
+5. 创建好后，页面上会显示一个 **Namespace ID**，先复制存到记事本里，等下要用
 
 ---
 
-## 第 4 步：确认配置文件
+## 第 4 步：创建一个 Worker
 
-用文本编辑器打开项目根目录里的 `wrangler.toml`，看一下里面的内容。默认长这样：
-
-```toml
-name = "edgehost"
-main = "worker/index.js"
-compatibility_date = "2025-05-05"
-compatibility_flags = ["enable_weak_ref"]
-
-[[durable_objects.bindings]]
-name = "FILE_STORE"
-class_name = "FileStore"
-
-[[migrations]]
-tag = "v1"
-new_classes = ["FileStore"]
-
-[placement]
-mode = "smart"
-```
-
-- `name = "edgehost"`：这是你的 Worker 名字，可以改成你自己的，比如 `name = "my-php-host"`。改完后你的网站地址会是 `https://my-php-host.你的账号.workers.dev`。
-- 其它内容**不用改**，存储用的是 Durable Objects，配置已经写好了。
-
-改完保存。
+1. 左侧 **Workers & Pages** → 点 **Create**（创建）
+2. 选 **Worker** → 选 **Start from Hello World**（从示例开始）
+3. Worker 名字填一个你自己的，比如 `my-php-host`，点 **Deploy**（部署）
+4. 部署好后，进入这个 Worker，点 **Edit code**（编辑代码），会打开一个在线代码编辑器
 
 ---
 
-## 第 5 步：部署
+## 第 5 步：把代码放进 Worker
 
-在 `edgehost` 文件夹里执行：
+1. 打开你第 1 步解压出来的 `edgehost` 文件夹
+2. 用记事本（或任意文本编辑器）打开 `worker` 文件夹里的 `.js` 文件
+3. 把里面的内容复制到 Cloudflare 的在线代码编辑器里
+4. 按文件之间的引用关系，把需要的代码都放进去，保存
 
-```bash
-npm run deploy
-```
-
-等它上传部署，出现成功提示和访问地址就完成了。
-
-> ⚠️ 如果遇到 `compatibility_date` 或 WASM 相关报错，确认 `wrangler.toml` 里的 `compatibility_date` 是 `2025-05-05` 或更新的日期。
+> 提示：项目里的 `worker/index.js` 是入口文件，其它文件（`php-engine.js`、`api.js`、`store.js`、`auth.js`、`utils.js`、`panel.js`）都被它引用，要一起放进去。
 
 ---
 
-## 第 6 步：设置管理员密码（网页里做）
+## 第 6 步：绑定存储到 Worker
 
-1. 打开部署成功后给你的地址，格式是：
+1. 在这个 Worker 页面，点 **Settings**（设置）→ **Variables & Bindings**（变量和绑定）
+2. 点 **Add binding**（添加绑定）→ 选 **KV namespace**（或 Durable Object）
+3. 变量名填 `FILE_STORE`，值选你第 3 步创建的那个 namespace
+4. 点 **Save**（保存）
+
+---
+
+## 第 7 步：设置兼容选项
+
+1. 还是在 **Settings** 里，找到 **Compatibility date**（兼容日期），设成 `2025-05-05` 或更新
+2. **Compatibility flags**（兼容标志）里加上 `enable_weak_ref`
+3. 点 **Save** 保存
+
+---
+
+## 第 8 步：部署并打开面板
+
+1. 确认代码和绑定都弄好后，点 **Deploy**（部署）
+2. 部署完成后，浏览器打开：
    ```
-   https://你的Worker名字.你的账号.workers.dev/__admin
+   https://my-php-host.你的账号.workers.dev/__admin
    ```
-2. 第一次进入会显示「**设置管理员密码**」页面，输入你想用的密码
-3. 进面板后点 **✨ 生成演示站**
-4. 新开标签页打开网站根地址 `https://你的Worker名字.你的账号.workers.dev/`，就能看到 PHP 示例站了
+   （把 `my-php-host` 换成你第 4 步填的 Worker 名字）
+3. 第一次进入会显示「**设置管理员密码**」页面，输入你想用的密码
+4. 进面板后点 **✨ 生成演示站**，新开标签页打开网站根地址，就能看到 PHP 示例站了
 
 ---
 
-## 第 7 步（可选）：绑定自己的域名
+## 第 9 步（可选）：绑定自己的域名
 
-想用自己的域名访问，而不是那串 workers.dev 地址：
-
-- 在 Cloudflare 控制台 → **Workers & Pages** → 点你的 Worker → **Settings** → **Domains & Routes** → **Add** → **Custom Domain**，输入域名添加即可
-- 或者用命令行：
-
-```bash
-npx wrangler domains add 你的域名.com
-```
+在 Cloudflare 里点你的 Worker → **Settings** → **Domains & Routes** → **Add** → **Custom Domain**，输入你的域名添加即可。
 
 生效后：`https://你的域名/` 是网站，`https://你的域名/__admin` 是管理面板。
 
 ---
 
-## 面板里能干什么（图形界面）
+## 面板里能干什么
 
 | 功能 | 在哪 |
 |---|---|
 | 设置 / 修改管理员密码 | 面板「⚙ 设置」页 |
-| 配置 QQ 邮箱发信 | 面板「⚙ 设置」页，填服务器/邮箱/授权码，可点「发送测试邮件」 |
-| 新建 PHP / HTML / CSS / JS 文件 | 面板「文件管理」→ 新建 |
-| 上传图片 / 音频 / 视频 | 面板「文件管理」→ 上传 |
-| 在线编辑代码 | 点文件树里的文件直接改 |
+| 配置 QQ 邮箱发信 | 面板「⚙ 设置」页 |
+| 新建 / 上传 / 编辑网站文件 | 面板「文件管理」 |
 | 实时运行 PHP 代码 | 面板「PHP 控制台」 |
-| 预览网站 | 面板里的「网站预览」 |
+| 预览网站 | 面板「网站预览」 |
 
 ---
 
-## 常见问题
+## 说明
 
-| 问题 | 解决 |
-|---|---|
-| `npm install` 报错 | 确认 Node.js 版本 ≥ 18（`node -v` 查看），网络不好可换淘宝镜像重试 |
-| `npx wrangler login` 打不开浏览器 | 把终端里显示的链接手动复制到浏览器打开授权 |
-| 部署报 WASM / compatibility_date 错误 | `wrangler.toml` 里改成 `compatibility_date = "2025-05-05"` |
-| 忘记管理密码 | 删掉 Cloudflare 控制台里该 Worker 的 Durable Object 存储，或本地删 `.wrangler/state`，重新访问面板重设 |
-| 面板打不开 | 地址末尾必须是 `/__admin`，中间的 Worker 名字、账号名换成你自己的 |
+- 全过程都在 Cloudflare 网页界面操作，不用安装任何软件、不用打开终端。
+- 部署完成后，网站文件和密码等都在网页面板里图形化管理。
+- 如果某一步界面和教程对不上（Cloudflare 界面会更新），按页面实际提示操作即可。
