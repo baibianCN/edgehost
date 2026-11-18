@@ -14,7 +14,7 @@ EdgeHost 把 PHP 引擎（Zend Engine）编译成 **WebAssembly**，运行在 Cl
 
 **给别人用、让别人自己部署 —— 就点这个蓝色按钮：**
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/baibianCN/edgehost)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/baibianCN/edgehost-cloud)
 
 别人点它 → 登录自己的 Cloudflare 和 GitHub → 一路 Next，就自动部署好了。不用下载代码、不用命令行、不用填用户名。
 
