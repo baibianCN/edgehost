@@ -12,11 +12,13 @@ EdgeHost 把 PHP 引擎（Zend Engine）编译成 **WebAssembly**，运行在 Cl
 
 ## 🚀 一键部署（最简单的方式）
 
-**Fork 本仓库后，点下面的按钮，登录 Cloudflare，一路 Next —— 完事。**
+**点下面的按钮就行 —— 不用 Fork、不用填用户名、不用填任何 URL。**
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/baibianCN/edgehost)
 
-> 点上面按钮 → 登录 Cloudflare → 一路 Next，就部署好了。别人也能用这个按钮，不用改任何东西。
+> 点上面按钮 → 用你自己的 GitHub 账号登录 Cloudflare → 一路 Next。Cloudflare 会自动把仓库复制（Clone）到你自己的账号下，你啥都不用填。
+
+⚠️ **一定要从这个按钮进**，不要在 Cloudflare 控制台里手动选「从 Git 仓库导入」再粘 URL —— 手动粘容易出现「无法获取存储库内容」报错（详见文末故障排查）。
 
 部署完成后：
 
@@ -294,6 +296,7 @@ edgehost/
 
 | 问题 | 解决 |
 |---|---|
+| **「无法获取存储库内容」/ Unable to fetch repository contents** | Cloudflare 只允许部署**你自己的 GitHub 账号下的仓库**。① 别手动粘 URL，回到 README 点那个「Deploy to Cloudflare」按钮进入；② 确认 Cloudflare 里「Connect to GitHub」授权的是**拥有该仓库的账号**（例：仓库在 `baibianCN` 名下，就必须用 `baibianCN` 授权）；③ 若你想用别的账号，先去 GitHub 点 **Fork** 把仓库复制到自己名下，再从按钮部署、URL 填你 Fork 后的地址 |
 | `Internal Error 500` / `out of memory` | PHP WASM 初始内存 64MB，页面逻辑别太重的循环；并发高时升级 Worker 套餐 |
 | 部署报 wasm 相关错误 | `compatibility_date` 设成 `2025-05-05` 或更新（已配好） |
 | 忘记管理密码 | 删掉 Cloudflare Dashboard 里该 Worker 的 Durable Object 存储（或本地删 `.wrangler/state`），重新访问面板即可重设 |
