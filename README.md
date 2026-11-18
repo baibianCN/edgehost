@@ -12,26 +12,30 @@ EdgeHost 把 PHP 引擎（Zend Engine）编译成 **WebAssembly**，运行在 Cl
 
 ## 🚀 部署方式
 
-> ⚠️ **重要：Cloudflare 只能从「你自己的 GitHub 仓库」部署。**
-> 直接点别人的仓库会报「无法获取存储库内容 / Unable to fetch repository contents」——这是 Cloudflare 的硬性规则，不是项目坏了。所以第一步一定是**先把项目复制一份到你自己的 GitHub 账号下**。
+### 方法一：一键部署包（最简单、不用 GitHub、推荐）
 
-### 第 1 步：把项目复制到你自己的 GitHub 账号（点一下）
+下载 👉 **[EdgeHost-一键部署包.zip](https://github.com/baibianCN/edgehost/raw/main/EdgeHost-一键部署包.zip)**，解压后**双击里面的脚本**（Windows 双击 `.bat`，Mac 双击 `.command`），它会自动装依赖 → 打开浏览器登录 Cloudflare → 部署完成。全程不用敲命令、**不用连 GitHub**，也不会遇到"无法获取存储库内容"。
 
-打开模板仓库：**https://github.com/baibianCN/edgehost**
+> 电脑需先装 [Node.js](https://nodejs.org/)（LTS 版），脚本会自动检测。详情见包内《先看我-使用说明.md》。
 
-点右上角的绿色按钮 **「Use this template」→「Create a new repository」**，仓库名随便取（比如 `my-php-host`），选 Public，点 **Create repository**。
+### 方法二：Deploy 按钮（连 GitHub）
 
-这样就在**你自己的账号下**生成了一份完整代码 —— 这是 Cloudflare 能读取的前提。
+> ⚠️ **Cloudflare 只能从「你自己的 GitHub 仓库」部署。** 直接点别人的仓库会报「无法获取存储库内容」——这是 Cloudflare 的硬性规则，不是项目坏了。
 
-### 第 2 步：从你自己刚建的仓库部署
-
-进入你刚创建的那个仓库 → 打开 README → 点里面的 **Deploy to Cloudflare** 按钮 → 登录 Cloudflare 和 GitHub → 一路 Next。
+1. 打开模板仓库 **https://github.com/baibianCN/edgehost**，点右上角绿色按钮 **「Use this template」→「Create a new repository」**，在你自己账号下生成一份。
+2. 进入你刚建的仓库 → 点 README 里的 Deploy 按钮 → 登录 Cloudflare 和 GitHub → 一路 Next。
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/baibianCN/edgehost-cloud)
 
-> 注意：上面这个按钮指向的是模板仓库。你要从**你自己第 1 步创建的仓库** README 里点按钮（新仓库会自动继承 README），那时 URL 已经是你自己的仓库了，就不会再报错。
+### 方法三：手动命令行部署
 
-**想自己手动部署（下载代码、一步步配）的，看 [DEPLOY.md](DEPLOY.md)。**
+看 [DEPLOY.md](DEPLOY.md)。
+
+### ⚠️ 中国大陆访问提醒
+
+Cloudflare 免费分配的 `xxx.workers.dev` 网址**在中国大陆经常被拦截、打不开**。解决办法是**绑定你自己的域名**（访客访问你的域名，不走 workers.dev）。部署后到 Cloudflare → 你的 Worker → Settings → Domains & Routes → Add Custom Domain 绑定即可。
+
+> 说实话：绑域名能从"打不开"变成"大多能打开"，但 Cloudflare 免费版在国内没有专用节点，速度和稳定性看地区/运营商/时段。若访客主要在国内且要求稳定流畅，国内服务器 + 备案才是正解。
 
 部署完成后：
 
