@@ -16,7 +16,7 @@ class_name = "FileStore"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["FileStore"]
+new_sqlite_classes = ["FileStore"]
 
 [placement]
 mode = "smart"
