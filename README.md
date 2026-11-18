@@ -12,13 +12,24 @@ EdgeHost 把 PHP 引擎（Zend Engine）编译成 **WebAssembly**，运行在 Cl
 
 ## 🚀 部署方式
 
-**给别人用、让别人自己部署 —— 就点这个蓝色按钮：**
+> ⚠️ **重要：Cloudflare 只能从「你自己的 GitHub 仓库」部署。**
+> 直接点别人的仓库会报「无法获取存储库内容 / Unable to fetch repository contents」——这是 Cloudflare 的硬性规则，不是项目坏了。所以第一步一定是**先把项目复制一份到你自己的 GitHub 账号下**。
+
+### 第 1 步：把项目复制到你自己的 GitHub 账号（点一下）
+
+打开模板仓库：**https://github.com/baibianCN/edgehost**
+
+点右上角的绿色按钮 **「Use this template」→「Create a new repository」**，仓库名随便取（比如 `my-php-host`），选 Public，点 **Create repository**。
+
+这样就在**你自己的账号下**生成了一份完整代码 —— 这是 Cloudflare 能读取的前提。
+
+### 第 2 步：从你自己刚建的仓库部署
+
+进入你刚创建的那个仓库 → 打开 README → 点里面的 **Deploy to Cloudflare** 按钮 → 登录 Cloudflare 和 GitHub → 一路 Next。
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/baibianCN/edgehost-cloud)
 
-别人点它 → 登录自己的 Cloudflare 和 GitHub → 一路 Next，就自动部署好了。不用下载代码、不用命令行、不用填用户名。
-
-> 若提示「无法获取存储库内容」：先把项目 Fork 到你自己的 GitHub 账号，再从你自己仓库里的按钮部署。
+> 注意：上面这个按钮指向的是模板仓库。你要从**你自己第 1 步创建的仓库** README 里点按钮（新仓库会自动继承 README），那时 URL 已经是你自己的仓库了，就不会再报错。
 
 **想自己手动部署（下载代码、一步步配）的，看 [DEPLOY.md](DEPLOY.md)。**
 
